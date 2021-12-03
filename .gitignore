@@ -2,3 +2,4 @@ cmake-build-debug
 .idea
 src/partOne.txt
 src/partTwo.txt
+src/results.txt
