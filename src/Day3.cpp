@@ -45,26 +45,45 @@ bitset<SIZE> stringToBits(string bitString) {
     return result;
 }
 
+bitset<SIZE> partTwo(vector<string> strings, bool oxygen) {
+    vector<string> dump;
+    bool found = false;
+    int frequency[SIZE][2];
+    int value;
+    bitset<SIZE> result;
+
+    calculateFrequency(frequency, strings);
+    for (int i = 0; i < SIZE && !found; i++) {
+        dump.clear();
+        if (i >= 1) {
+            calculateFrequency(frequency, strings);
+        }
+        value = oxygen ?
+                ((frequency[i][0] > frequency[i][1]) ? '0' : '1') :
+                ((frequency[i][0] <= frequency[i][1]) ? '0' : '1');
+        filterBits(strings, dump, value, i);
+        if (strings.size() == 1) {
+            found = true;
+            result = stringToBits(strings[0]);
+        }
+    }
+    return result;
+}
+
 int main(){
     ifstream fin("../src/partTwo.txt");
     ifstream rin("../src/partTwo.txt");
-    string bitString;
+    string reading;
     bitset<SIZE> gamma;
     bitset<SIZE> epsilon;
     vector<string> strings;
-    char value;
-    vector<string> oxygen;
-    vector<string> carbon;
     bitset<SIZE> o2;
     bitset<SIZE> co2;
-    vector<string> dump;
-    bool found = false;
 
     int frequency[SIZE][2];
-    int index;
     if (fin.is_open()) {
-        while (fin >> bitString) {
-            strings.push_back(bitString);
+        while (fin >> reading) {
+            strings.push_back(reading);
         }
     }
     fin.close();
@@ -85,42 +104,14 @@ int main(){
 
     if (rin.is_open()) {
 
-        while (rin >> bitString) {
-            strings.push_back(bitString);
+        while (rin >> reading) {
+            strings.push_back(reading);
         }
     }
     rin.close();
 
-    calculateFrequency(frequency, strings);
-    oxygen = strings;
-    for (int i = 0; i < SIZE && !found; i++) {
-        dump.clear();
-        if (i >= 1) {
-            calculateFrequency(frequency, oxygen);
-        }
-        value = (frequency[i][0] > frequency[i][1]) ? '0' : '1';
-        filterBits(oxygen, dump, value, i);
-        if (oxygen.size() == 1) {
-            found = true;
-            o2 = stringToBits(oxygen[0]);
-        }
-    }
-
-    found = false;
-    calculateFrequency(frequency, strings);
-    carbon = strings;
-    for (int i = 0; i < SIZE && !found; i++) {
-        dump.clear();
-        if (i >= 1) {
-            calculateFrequency(frequency, carbon);
-        }
-        value = (frequency[i][0] <= frequency[i][1]) ? '0' : '1';
-        filterBits(carbon, dump, value, i);
-        if (carbon.size() == 1) {
-            found = true;
-            co2 = stringToBits(carbon[0]);
-        }
-    }
+    o2 = partTwo(strings, true);
+    co2 = partTwo(strings, false);
     cout << o2.to_ulong() * co2.to_ulong() << endl;
 
     return 0;
