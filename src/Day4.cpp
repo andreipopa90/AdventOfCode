@@ -53,7 +53,8 @@ int main() {
     ifstream fin("../src/partOne.txt");
     ifstream rin("../src/partTwo.txt");
     string inputNumbers;
-    string number;
+    string stringNumber;
+    int number;
     char delim = ',';
     vector<int> drawn;
     vector<bingo> boards;
@@ -68,20 +69,14 @@ int main() {
     if (fin.is_open()) {
         getline(fin, inputNumbers);
         stringstream ss(inputNumbers);
-        while (getline(ss, number, delim)) {
-            drawn.push_back(stoi(number));
+        while (getline(ss, stringNumber, delim)) {
+            drawn.push_back(stoi(stringNumber));
         }
-
-        while (getline(fin, inputNumbers)) {
-            istringstream iss(inputNumbers);
-            vector<string> input((istream_iterator<string>(iss)),
-                                 istream_iterator<string>());
-            for (string i: input) {
-                boardNumber n;
-                n.value = stoi(i);
-                n.chosen = false;
-                line.push_back(n);
-            }
+        while (fin >> number) {
+            boardNumber bn;
+            bn.value = number;
+            bn.chosen = false;
+            line.push_back(bn);
             if (line.size() == SIZE * SIZE) {
                 bingo bingoBoard;
                 bingoBoard.board = line;
