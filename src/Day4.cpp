@@ -7,7 +7,6 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <iterator>
 
 #define SIZE 5
 
@@ -50,8 +49,7 @@ bool has_column(vector<boardNumber> board) {
 
 int main() {
 
-    ifstream fin("../src/partOne.txt");
-    ifstream rin("../src/partTwo.txt");
+    ifstream fin("../src/input.txt");
     string inputNumbers;
     string stringNumber;
     int number;
@@ -80,7 +78,7 @@ int main() {
             if (line.size() == SIZE * SIZE) {
                 bingo bingoBoard;
                 bingoBoard.board = line;
-                bingoBoard.place = -1;
+                bingoBoard.place = 0;
                 boards.push_back(bingoBoard);
                 line.clear();
             }
@@ -88,7 +86,7 @@ int main() {
 
         for (int d: drawn) {
             for (auto &board: boards) {
-                if (board.place == -1) {
+                if (board.place == 0) {
                     for (auto &number: board.board) {
                         if (number.value == d) {
                             number.chosen = true;
@@ -102,26 +100,29 @@ int main() {
                             found = true;
                             break;
                         }
-                        place += 1;
-                        if (board.place == 1) {
+                        else if (board.place == 1) {
                             result = board.board;
                             finalCall = d;
                         }
+                        place += 1;
                     }
                 }
             }
             if (found) break;
         }
         int sum = 0;
+        long output = 0;
         for (auto value: result) {
             sum = (value.chosen) ? sum : sum + value.value;
         }
-        cout << sum * finalCall << endl;
+        output = sum * finalCall;
+        cout << output << endl;
         sum = 0;
         for (auto value: loser) {
             sum = (value.chosen) ? sum : sum + value.value;
         }
-        cout << sum * loserCall << endl;
+        output = sum * loserCall;
+        cout << output << endl;
     }
     fin.close();
     return 0;
