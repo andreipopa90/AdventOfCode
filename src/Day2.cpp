@@ -51,5 +51,7 @@ int main() {
 
         cout << horizontal * depth << endl;
     }
+    fin.close();
+    rin.close();
     return 0;
 }

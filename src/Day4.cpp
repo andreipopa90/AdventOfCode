@@ -111,7 +111,7 @@ int main() {
             if (found) break;
         }
         int sum = 0;
-        long output = 0;
+        long output;
         for (auto value: result) {
             sum = (value.chosen) ? sum : sum + value.value;
         }
