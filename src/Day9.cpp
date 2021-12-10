@@ -132,7 +132,8 @@ int main() {
     }
     sort(basin_sizes.begin(), basin_sizes.end());
     unsigned long long result;
-    result = basin_sizes[basin_sizes.size() - 1] * basin_sizes[basin_sizes.size() - 2] * basin_sizes[basin_sizes.size() - 3];
+    int lastIndex = basin_sizes.size() - 1;
+    result = basin_sizes[lastIndex] * basin_sizes[lastIndex - 1] * basin_sizes[lastIndex - 2];
     cout << result << endl;
     cout << sum << endl;
     return 0;
