@@ -3,3 +3,4 @@ cmake-build-debug
 src/partOne.txt
 src/partTwo.txt
 src/results.txt
+src/input.txt
