@@ -6,46 +6,42 @@
 #include <vector>
 #include <algorithm>
 #include <map>
+#include <chrono>
 
 using namespace std;
 
 struct Cave {
     string name;
+    int visited = 0;
     bool small;
     vector<Cave> neighbours;
 };
 
-vector<Cave> path;
 map<string, Cave> caves;
-map<string, int> visited;
 bool twice = false;
 int nb_of_paths = 0;
 
-void walk(const Cave &cave) {
+void walk(Cave &cave) {
 
     if (cave.name == "end") {
         nb_of_paths ++;
-    } else if (((!twice) || (twice && visited[cave.name] == 0))) {
+    } else if (((!twice) || (twice && cave.visited == 0)) || (!cave.small)) {
 
-        if (cave.small) {
-            visited[cave.name] += 1;
-            if (visited[cave.name] == 2) {
-                twice = true;
-            }
+        cave.visited += 1;
+        if (cave.visited == 2 && cave.small) {
+            twice = true;
         }
-        path.push_back(cave);
 
         for (auto &n: cave.neighbours) {
-            walk(caves[n.name]);
-        }
-
-        if (cave.small) {
-            visited[cave.name] -= 1;
-            if (visited[cave.name] == 1) {
-                twice = false;
+            if (((!twice) || (twice && n.visited == 0)) || (!n.small)) {
+                walk(caves[n.name]);
             }
         }
-        path.pop_back();
+
+        cave.visited -= 1;
+        if (cave.visited == 1 && cave.small) {
+            twice = false;
+        }
     }
 }
 
@@ -87,13 +83,12 @@ int main() {
         }
     }
 
-    for (auto c: caves) {
-        if (c.first != "start" and c.first != "end") {
-            visited[c.first] = 0;
-        }
-    }
+    auto time1 = chrono::high_resolution_clock::now();
 
     walk(caves["start"]);
     cout << nb_of_paths << endl;
+    auto time2 = chrono::high_resolution_clock::now();
+    chrono::duration<double, std::milli> ms_double = time2 - time1;
+    cout << ms_double.count() << "ms" << endl;
     return 0;
 }
