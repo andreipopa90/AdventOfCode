@@ -7,8 +7,8 @@
 
 using namespace std;
 
-int direction_x[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
-int direction_y[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
+const vector<int> direction_x = {-1, -1, -1, 0, 0, 1, 1, 1};
+const vector<int> direction_y = {-1, 0, 1, -1, 1, -1, 0, 1};
 
 struct octopus{
     int timer;
@@ -41,15 +41,15 @@ void chain_reaction(vector<vector<octopus>> &grid, int x, int y) {
 
 int count_flashes(const vector<vector<octopus>> &grid) {
     int flashes = 0;
-    for (auto line: grid) {
-        for (auto l: line) {
+    for (auto const line: grid) {
+        for (auto const l: line) {
             flashes = (l.timer == 0) ? flashes + 1 : flashes;
         }
     }
     return flashes;
 }
 
-bool all_zero(vector<vector<octopus>> grid) {
+bool all_zero(const vector<vector<octopus>> &grid) {
     for (auto line: grid) {
         for (auto l: line) {
             if (l.timer != 0) return false;
