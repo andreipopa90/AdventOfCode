@@ -3,53 +3,41 @@
 //
 #include <iostream>
 #include <fstream>
-#include <map>
+#include <vector>
 #include <chrono>
+#include <iterator>
+#include <algorithm>
 
 using namespace std;
 
-void fold_y(int axis, map<pair<int, int>, int> &paper) {
+void fold_y(int axis, vector<pair<int, int>> &paper) {
     int difference;
-    pair<int, int> new_coordinates;
     for (auto &entry: paper) {
-        if (entry.first.second > axis && paper[entry.first] != 0) {
-            difference = entry.first.second - axis;
-            new_coordinates = make_pair(entry.first.first, axis - difference);
-            paper[new_coordinates] = 1;
-            paper[entry.first] = 0;
+        if (entry.second > axis) {
+            difference = entry.second - axis;
+            entry = make_pair(entry.first, axis - difference);
         }
     }
+    sort(paper.begin(), paper.end());
+    unique(paper.begin(), paper.end());
 }
 
-void fold_x(int axis, map<pair<int, int>, int> &paper) {
+void fold_x(int axis, vector<pair<int, int>> &paper) {
     int difference;
-    pair<int, int> new_coordinates;
-    for (auto entry: paper) {
-        if (entry.first.first > axis && paper[entry.first] != 0) {
-            difference = entry.first.first - axis;
-            new_coordinates = make_pair(axis - difference, entry.first.second);
-            paper[new_coordinates] = 1;
-            paper[entry.first] = 0;
+    for (auto &entry: paper) {
+        if (entry.first > axis) {
+            difference = entry.first - axis;
+            entry = make_pair(axis - difference, entry.second);
         }
     }
+
 }
 
-void print_paper(map<pair<int, int>, int> paper, int x, int y) {
-    int grid[y][x];
+void print_paper(const vector<pair<int, int>> &paper, int x, int y) {
     for (int i = 0; i < y; i++) {
         for (int j = 0; j < x; j++) {
-            grid[i][j] = 0;
-        }
-    }
-    for (auto entry: paper) {
-        if (entry.second  == 1)
-            grid[entry.first.second][entry.first.first] = entry.second;
-    }
-
-    for (int i = 0; i < y; i++) {
-        for (int j = 0; j < x; j++) {
-            if (grid[i][j] == 0) cout << "_ ";
-            else cout << "* ";
+            if (find(paper.begin(), paper.end(), make_pair(j, i)) != paper.end()) cout << "* ";
+            else cout << "_ ";
         }
         cout << endl;
     }
@@ -57,7 +45,7 @@ void print_paper(map<pair<int, int>, int> paper, int x, int y) {
 
 int main() {
     ifstream fin("../src/input.txt");
-    map<pair<int, int>, int> paper;
+    vector<pair<int, int>> paper;
     string input = " ";
     pair<int, int> coordinate;
 
@@ -68,7 +56,7 @@ int main() {
             int index = input.find(',');
             coordinate = make_pair(stoi(input.substr(0, index)),
                                    stoi(input.substr(index + 1, input.size())));
-            paper[coordinate] = 1;
+            paper.push_back(coordinate);
         }
     }
     int axis;
@@ -89,6 +77,9 @@ int main() {
                 break;
         }
     }
+
+    sort(paper.begin(), paper.end());
+    unique(paper.begin(), paper.end());
 
     print_paper(paper, last_x, last_y);
     auto time2 = chrono::high_resolution_clock::now();
