@@ -53,6 +53,8 @@ int main() {
     char delim = '-';
     vector<pair<string, string>> links;
 
+    auto time1 = chrono::high_resolution_clock::now();
+
     while (getline(fin, input)) {
         link1.name = input.substr(0, input.find(delim));
         link1.small = 'a' <= link1.name[0] && link1.name[0] <= 'z';
@@ -70,7 +72,6 @@ int main() {
             caves[link2.name] = link2;
         }
     }
-
     fin.close();
 
     for (auto pair: links) {
@@ -82,8 +83,6 @@ int main() {
             caves[pair.second].neighbours.push_back(caves[pair.first]);
         }
     }
-
-    auto time1 = chrono::high_resolution_clock::now();
 
     walk(caves["start"]);
     cout << nb_of_paths << endl;
