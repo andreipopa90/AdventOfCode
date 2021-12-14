@@ -5,7 +5,6 @@
 #include <fstream>
 #include <vector>
 #include <chrono>
-#include <iterator>
 #include <algorithm>
 
 using namespace std;
@@ -18,8 +17,6 @@ void fold_y(int axis, vector<pair<int, int>> &paper) {
             entry = make_pair(entry.first, axis - difference);
         }
     }
-    sort(paper.begin(), paper.end());
-    unique(paper.begin(), paper.end());
 }
 
 void fold_x(int axis, vector<pair<int, int>> &paper) {
@@ -49,6 +46,9 @@ int main() {
     string input = " ";
     pair<int, int> coordinate;
 
+    int axis;
+    int last_y, last_x;
+
     auto time1 = chrono::high_resolution_clock::now();
     while (input != "") {
         getline(fin, input);
@@ -59,27 +59,22 @@ int main() {
             paper.push_back(coordinate);
         }
     }
-    int axis;
-    int last_y, last_x;
+
 
     while(getline(fin, input)) {
         int index = input.find('=');
+        axis = stoi(input.substr(index + 1, input.size()));
         switch(input[index - 1]) {
             case 'y':
-                axis = stoi(input.substr(index + 1, input.size()));
                 fold_y(axis, paper);
                 last_y = axis;
                 break;
             case 'x':
-                axis = stoi(input.substr(index + 1, input.size()));
                 fold_x(axis, paper);
                 last_x = axis;
                 break;
         }
     }
-
-    sort(paper.begin(), paper.end());
-    unique(paper.begin(), paper.end());
 
     print_paper(paper, last_x, last_y);
     auto time2 = chrono::high_resolution_clock::now();
